@@ -15,7 +15,7 @@ Hack, capture the flag, and auto-verify. 27 hand-built challenges across two tra
 
 ## What it is
 
-RangeSphere is a range you host yourself. Each challenge
+RangeSphere is a security training range you host yourself. Each challenge
 launches an isolated target plus a Kali-based **attacker box** with an in-browser
 terminal (ttyd) and web-pentest tools. Blue-team challenges ship an **analyst box**
 with evidence to triage.
