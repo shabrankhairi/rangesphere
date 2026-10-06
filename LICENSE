@@ -1,0 +1,53 @@
+RangeSphere Freeware License
+Copyright (c) 2026 Shabran Al Khairi. All rights reserved.
+
+RangeSphere ("the Software") is free-to-use (freeware) software. It is NOT
+open-source software. The source code is not published. By downloading,
+installing, running, or otherwise using the Software (including its
+pre-built container images), you agree to the terms below.
+
+1. GRANT OF USE
+   You are granted a free, non-exclusive, non-transferable, revocable license
+   to download and run the Software, as distributed in its official container
+   images, for the purpose of authorized security training and education,
+   including internal use within your organization.
+
+2. RESTRICTIONS
+   You may NOT:
+   a. reverse engineer, decompile, disassemble, deobfuscate, or otherwise
+      attempt to derive the source code of the Software, except to the limited
+      extent such restriction is expressly prohibited by applicable law;
+   b. redistribute, resell, sublicense, rent, lease, or host the Software as a
+      paid service to third parties;
+   c. modify, adapt, translate, or create derivative works of the Software;
+   d. remove, alter, or obscure any copyright, trademark, or other proprietary
+      notices, including the "RangeSphere" name and logo;
+   e. use the Software to attack systems you do not own or are not explicitly
+      authorized, in writing, to test.
+
+3. INTENTIONALLY VULNERABLE COMPONENTS
+   The Software deploys intentionally vulnerable applications and offensive
+   tooling for training. These are insecure BY DESIGN. You are solely
+   responsible for running the Software only on isolated, controlled hosts and
+   networks, segregated from production and the public internet. See SECURITY.md.
+
+4. NO WARRANTY
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+
+5. LIMITATION OF LIABILITY
+   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING
+   FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR ITS USE, INCLUDING ANY
+   COMPROMISE, DATA LOSS, OR DAMAGE RESULTING FROM ITS INTENTIONALLY VULNERABLE
+   COMPONENTS.
+
+6. TERMINATION
+   This license terminates automatically if you breach any term. On
+   termination you must cease all use and remove all copies and images.
+
+7. RESERVATION OF RIGHTS
+   All rights not expressly granted are reserved by the author.
+
+Contact: Shabran Al Khairi — https://www.linkedin.com/in/shabrankhairi/

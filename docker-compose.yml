@@ -1,0 +1,61 @@
+# RangeSphere — public deployment (runs pre-built images; no source needed).
+# Set OWNER to the GitHub owner that publishes the images (default below).
+# Usage:
+#   cp .env.example .env    # edit secrets
+#   ./start.sh              # or run the steps in README.md
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${PGUSER:-rangesphere}
+      POSTGRES_PASSWORD: ${PGPASSWORD:-rangesphere}
+      POSTGRES_DB: ${PGDATABASE:-rangesphere}
+    volumes:
+      - rs_pgdata:/var/lib/postgresql/data
+    networks: [core]
+    restart: unless-stopped
+
+  backend:
+    image: ghcr.io/${OWNER:-shabrankhairi}/rangesphere-backend:${TAG:-latest}
+    environment:
+      PORT: 4000
+      PGHOST: db
+      PGUSER: ${PGUSER:-rangesphere}
+      PGPASSWORD: ${PGPASSWORD:-rangesphere}
+      PGDATABASE: ${PGDATABASE:-rangesphere}
+      JWT_SECRET: ${JWT_SECRET:-change-me}
+      ALLOW_OPEN_REGISTRATION: ${ALLOW_OPEN_REGISTRATION:-true}
+      ADMIN_USER: ${ADMIN_USER:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-changeme-admin}
+      DOCKER_SOCKET: /var/run/docker.sock
+      TARGET_NETWORK: rangesphere_targets
+      TARGET_BIND_HOST: ${TARGET_BIND_HOST:-127.0.0.1}
+      TARGET_PORT_MIN: ${TARGET_PORT_MIN:-20000}
+      TARGET_PORT_MAX: ${TARGET_PORT_MAX:-21000}
+      INSTANCE_TTL_MIN: ${INSTANCE_TTL_MIN:-120}
+      MAX_INSTANCES_PER_USER: ${MAX_INSTANCES_PER_USER:-2}
+      ATTACKBOX_IMAGE: ghcr.io/${OWNER:-shabrankhairi}/rangesphere-attackbox:${TAG:-latest}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on: [db]
+    networks: [core]
+    restart: unless-stopped
+
+  frontend:
+    image: ghcr.io/${OWNER:-shabrankhairi}/rangesphere-frontend:${TAG:-latest}
+    ports:
+      - "${PORTAL_PORT:-8080}:80"
+    depends_on: [backend]
+    networks: [core]
+    restart: unless-stopped
+
+networks:
+  core:
+    driver: bridge
+  rangesphere_targets:
+    name: rangesphere_targets
+    driver: bridge
+
+volumes:
+  rs_pgdata:
