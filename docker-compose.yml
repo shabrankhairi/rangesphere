@@ -26,8 +26,11 @@ services:
       PGDATABASE: ${PGDATABASE:-rangesphere}
       JWT_SECRET: ${JWT_SECRET:-change-me}
       ALLOW_OPEN_REGISTRATION: ${ALLOW_OPEN_REGISTRATION:-true}
-      ADMIN_USER: ${ADMIN_USER:-admin}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-changeme-admin}
+      DEMO_USER: ${DEMO_USER:-demo}
+      DEMO_PASSWORD: ${DEMO_PASSWORD:-demo123}
+      # Admins are NOT configured here — create them from inside the system:
+      #   docker compose run --rm backend node src/admincli.js set <user> <pass>
+      PENALTY_POINTS: ${PENALTY_POINTS:-10}
       DOCKER_SOCKET: /var/run/docker.sock
       TARGET_NETWORK: rangesphere_targets
       TARGET_BIND_HOST: ${TARGET_BIND_HOST:-127.0.0.1}

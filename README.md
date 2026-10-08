@@ -15,12 +15,13 @@ Hack, capture the flag, and auto-verify. 27 hand-built challenges across two tra
 
 ## What it is
 
-RangeSphere is a security training range you host yourself. Each challenge
+RangeSphere is a TryHackMe/Hack-The-Box-style range you host yourself. Each challenge
 launches an isolated target plus a Kali-based **attacker box** with an in-browser
 terminal (ttyd) and web-pentest tools. Blue-team challenges ship an **analyst box**
 with evidence to triage.
 
-- **27 challenges** — 15 Red (offensive) + 12 Blue (DFIR / detection)
+- **40 challenges** — 20 Red (offensive) + 20 Blue (DFIR / detection), incl. an *insane* fileless-APT memory-forensics lab
+- **Per-challenge writeup PDF** (admin only) — downloadable answer key straight from the challenge page
 - **Live attacker box** — nmap, sqlmap, ffuf, nikto, gobuster, wordlists
 - **Per-instance isolation** — each user gets a target + box on a private Docker network, auto-torn-down on a TTL
 - **Auto-checker + flags** — unique `FLAG{…}` per instance, plus a per-challenge objective checker
@@ -56,7 +57,22 @@ cp .env.example .env        # edit secrets (DB password, JWT secret, admin passw
 ./start.sh
 ```
 
-Then open **http://localhost:8080** and log in with the admin account from your `.env`.
+Then open **http://localhost:8080**.
+
+### Logging in
+
+- **Demo account (default):** `demo` / `demo123` — a normal member. Anyone can log in and play.
+- **Admin:** not configured in any file. The operator creates/resets the admin **from inside the
+  running system**, so the password is stored hashed in the DB and never sits in config:
+
+  ```bash
+  docker compose run --rm backend node src/admincli.js set <username> <password>
+  ```
+
+  Until an admin is created there is **no admin** (members use the demo account; writeups stay
+  hidden). On the public demo, ask the maintainer for admin access. Once you have an admin, you
+  can create/manage other users (member or admin) from the **Admin → Users** panel, or with
+  `admincli.js` (`list`, `passwd`, `demote`, `delete`).
 
 ### Manual steps (or Windows PowerShell)
 
@@ -78,17 +94,20 @@ The first time a challenge is started, its target image is pulled — that launc
   in `.env` once everyone is enrolled.
 - For access from other machines on an **isolated** LAN, set `TARGET_BIND_HOST=0.0.0.0`
   and reach the portal/instances via the host's IP.
-- **Change the admin password** (`ADMIN_PASSWORD`) before first run.
+- **Create your admin** with `admincli.js set` (above) and keep that password private —
+  there is no admin until you do.
 
 ---
 
 ## Tracks
 
-| 🔴 Red Team (15) | 🔵 Blue Team (12) |
+| 🔴 Red Team (18) | 🔵 Blue Team (17) |
 |---|---|
 | SQLi, command injection, NoSQLi, SSTI→RCE, XXE | Access-log triage, Log4Shell hunt, SQLi-dump triage |
 | IDOR, mass assignment, LFI, unrestricted upload | Webshell hunt, persistence hunt, malware dropper |
-| SSRF, SSRF→cloud metadata, GraphQL, race condition | DNS tunneling, proxy exfil, SSH & Windows brute force, JWT forensics, phishing triage |
+| SSRF, SSRF→cloud metadata, GraphQL, race condition | DNS tunneling, proxy exfil, SSH & Windows brute force |
+| open redirect, CORS misconfig, insecure deserialization | JWT forensics, phishing triage, PowerShell decode, credential stuffing, C2 beacon detect |
+| | **memory forensics (injected process)**, **Linux rootkit hunt** |
 
 ---
 

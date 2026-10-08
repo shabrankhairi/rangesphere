@@ -25,5 +25,5 @@ docker compose up -d
 
 echo
 echo "[start] RangeSphere is up → http://localhost:${PORTAL_PORT:-8080}"
-echo "        Admin: ${ADMIN_USER:-admin} (password from .env)"
+echo "        Admin: create one -> docker compose run --rm backend node src/admincli.js set <user> <pass>"
 echo "        First 'Start instance' per challenge pulls its target image — be patient."

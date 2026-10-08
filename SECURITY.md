@@ -19,8 +19,10 @@ disposable environment.
 
 ## Harden your deployment
 
-- Change every secret in `.env` before first run: `PGPASSWORD`, `JWT_SECRET`,
-  `ADMIN_PASSWORD`.
+- Change every secret in `.env` before first run: `PGPASSWORD`, `JWT_SECRET`.
+- Create your admin from inside the system (`docker compose run --rm backend node
+  src/admincli.js set <user> <pass>`) and keep that password private — it is never
+  stored in config.
 - Set `ALLOW_OPEN_REGISTRATION=false` after your team has enrolled.
 - Put the portal behind your own VPN/SSO if teammates connect remotely.
 
