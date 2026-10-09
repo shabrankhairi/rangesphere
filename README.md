@@ -20,7 +20,7 @@ launches an isolated target plus a Kali-based **attacker box** with an in-browse
 terminal (ttyd) and web-pentest tools. Blue-team challenges ship an **analyst box**
 with evidence to triage.
 
-- **40 challenges** — 20 Red (offensive) + 20 Blue (DFIR / detection), incl. an *insane* fileless-APT memory-forensics lab
+- **50 challenges** — 25 Red (offensive) + 25 Blue (DFIR / detection), including a **10-challenge *insane* track** (blind SQLi, SSTI sandbox escape, OOB XXE, JWT kid SQLi, prototype-pollution RCE, DNS-exfil decode, Cobalt Strike config carving, LKM rootkit, AD golden ticket, APT correlation)
 - **Per-challenge writeup PDF** (admin only) — downloadable answer key straight from the challenge page
 - **Live attacker box** — nmap, sqlmap, ffuf, nikto, gobuster, wordlists
 - **Per-instance isolation** — each user gets a target + box on a private Docker network, auto-torn-down on a TTL
@@ -101,23 +101,63 @@ The first time a challenge is started, its target image is pulled — that launc
 
 ## Tracks
 
-| 🔴 Red Team (18) | 🔵 Blue Team (17) |
+| 🔴 Red Team (25) | 🔵 Blue Team (25) |
 |---|---|
-| SQLi, command injection, NoSQLi, SSTI→RCE, XXE | Access-log triage, Log4Shell hunt, SQLi-dump triage |
-| IDOR, mass assignment, LFI, unrestricted upload | Webshell hunt, persistence hunt, malware dropper |
+| SQLi, command injection, NoSQLi, SSTI→RCE, XXE, XPath | Access-log triage, Log4Shell hunt, SQLi-dump triage |
+| IDOR, mass assignment, LFI, unrestricted upload | Webshell hunt, persistence hunt, Run-key persistence |
 | SSRF, SSRF→cloud metadata, GraphQL, race condition | DNS tunneling, proxy exfil, SSH & Windows brute force |
-| open redirect, CORS misconfig, insecure deserialization | JWT forensics, phishing triage, PowerShell decode, credential stuffing, C2 beacon detect |
-| | **memory forensics (injected process)**, **Linux rootkit hunt** |
+| open redirect, CORS misconfig, insecure deserialization, prototype pollution | JWT forensics, phishing triage, PowerShell decode, credential stuffing, C2 beacon detect |
+| | malware dropper & Office macro analysis, Linux rootkit hunt, memory forensics |
+
+**🟣 Insane track (10):**
+
+| 🔴 Red (insane) | 🔵 Blue (insane) |
+|---|---|
+| Blind SQLi data exfiltration | DNS exfiltration decode (base32+XOR) |
+| SSTI sandbox / WAF filter bypass | Cobalt Strike beacon config carving |
+| Blind out-of-band XXE | Linux LKM kernel-rootkit forensics |
+| JWT `kid` SQL injection | Active Directory golden-ticket hunt |
+| Prototype pollution → RCE | APT kill-chain multi-source correlation |
 
 ---
 
-## Updating
+## Upgrading an existing install
+
+Already running an older version? Pick one of the two paths below.
+
+### A) Upgrade and keep your data (recommended)
+
+Keeps all users, scores and solves. New migrations are additive (`IF NOT EXISTS`)
+and the catalog is re-seeded with an upsert, so nothing existing is lost.
 
 ```bash
-docker compose pull
-docker compose run --rm backend node src/migrate.js
-docker compose run --rm backend node src/seed/seed.js
-docker compose up -d
+cd rangesphere
+git pull                                          # updated compose / .env.example
+docker compose pull                               # pull the new :latest images
+docker compose run --rm backend node src/migrate.js   # apply new migrations (e.g. penalties)
+docker compose run --rm backend node src/seed/seed.js # add new challenges + refresh writeups
+docker compose up -d                              # restart on the new images
+```
+
+Or just run the helper: `./upgrade.sh`
+
+Notes:
+- Your existing admin account still works. If you don't have one yet, create it:
+  `docker compose run --rm backend node src/admincli.js set <user> <pass>`
+- Old `.env` keeps working. `ADMIN_USER` / `ADMIN_PASSWORD` are now ignored (admin is
+  managed in-system); `PENALTY_POINTS` defaults to `10` if absent.
+- If you pinned `TAG=` in `.env`, set it to `latest` (or the version you want) before pulling.
+
+### B) Clean rebuild from scratch (wipes all data)
+
+Starts fresh — **deletes** all users, scores and solves.
+
+```bash
+cd rangesphere
+git pull
+docker compose down -v        # -v removes the database volume
+cp .env.example .env          # start from the new template (re-set your secrets)
+./start.sh                    # pull images, migrate, seed, run
 ```
 
 ---
